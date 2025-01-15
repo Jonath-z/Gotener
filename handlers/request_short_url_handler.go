@@ -39,9 +39,9 @@ func RequestShortUrl(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(models2.ShortenedUrl{
-		Hash:     "ljdieks",
-		ShortUrl: "https://short/ljdieks",
-		Encoding: "base64",
-		LongUrl:  urlHash,
+		Hash:     urlHash,
+		ShortUrl: "https://short/" + urlHash,
+		Encoding: "sha256",
+		LongUrl:  parseBody.LongUrl,
 	})
 }
