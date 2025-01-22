@@ -34,6 +34,7 @@ func RequestShortUrl(w http.ResponseWriter, r *http.Request) {
 	_, saveErr := database.Db.Model(&models2.ShortUrls{
 		LongUrl:  parseBody.LongUrl,
 		ShortUrl: "https://short/" + urlHash,
+		Hash:     urlHash,
 	}).Insert()
 
 	if saveErr != nil {
