@@ -1,0 +1,2 @@
+database-migrate:
+	goose up

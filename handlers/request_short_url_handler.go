@@ -3,13 +3,14 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/url_shortner/db"
-	"github.com/url_shortner/lib"
-	models2 "github.com/url_shortner/models"
 	"io"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/url_shortner/db"
+	"github.com/url_shortner/lib"
+	models2 "github.com/url_shortner/models"
 )
 
 func RequestShortUrl(w http.ResponseWriter, r *http.Request) {
@@ -26,12 +27,17 @@ func RequestShortUrl(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	database := db.Database{}
 
+	if database.Db == nil {
+		database.Connect()
+	}
+
 	_, saveErr := database.Db.Model(&models2.ShortUrls{
-		LongUrl: parseBody.LongUrl,
-		Hash:    urlHash,
+		LongUrl:  parseBody.LongUrl,
+		ShortUrl: "https://short/" + urlHash,
 	}).Insert()
 
 	if saveErr != nil {
+		fmt.Println(saveErr)
 		json.NewEncoder(w).Encode(models2.ErrorResponse{
 			Message: "Unable to save the shortened Url",
 		})
@@ -41,7 +47,6 @@ func RequestShortUrl(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(models2.ShortenedUrl{
 		Hash:     urlHash,
 		ShortUrl: "https://short/" + urlHash,
-		Encoding: "sha256",
 		LongUrl:  parseBody.LongUrl,
 	})
 }
