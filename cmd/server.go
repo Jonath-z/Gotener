@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/url_shortner/handlers"
 	"github.com/url_shortner/middleware"
-	"net/http"
 )
 
 type Server struct{}
@@ -21,4 +22,5 @@ func (s *Server) Run() {
 func (s *Server) InitializeRoutes() {
 	requestShortUrl := http.HandlerFunc(handlers.RequestShortUrl)
 	http.Handle("/shortener", middleware.ValidateShortUrlRequest(requestShortUrl))
+	http.HandleFunc("/", handlers.RedirectToLongUrl)
 }
